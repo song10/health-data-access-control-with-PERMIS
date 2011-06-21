@@ -1,8 +1,16 @@
+{% if test %}
+    <ul>
+    {% for x,y in test.items %}
+        <li>{{ x }}: {{ y }}</li>
+    {% endfor %}
+    </ul>
+{% endif %}
+
 {% if session %}
     <ul>
-        <li>{{ loginname }} : {{ session.loginname }}</li>
-        <li>{{ environment }} : {{ session.environment }}</li>
-        <li>{{ test }} : {{ session.test }}</li>
+    {% for x,y in session.items %}
+        <li>{{ x }}: {{ y }}</li>
+    {% endfor %}
     </ul>
 {% endif %}
 

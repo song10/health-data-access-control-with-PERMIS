@@ -1,0 +1,29 @@
+{% extends "center/baseTemplate.html" %}
+{% block title %}
+  Login to DBlog
+{% endblock %}
+
+{% block content %}
+
+{% if form.has_errors %}
+  <p>Login Failed. Please try again.</p>
+{% endif %}
+
+<form method="post" action=".">{% csrf_token %}
+  <h2>Login existing user</h2>
+  <table>
+    <tr>
+     <td><label for="id_username">Username:</label></td>
+     <td>{{ form.username }}</td>
+     <td><label for="id_password">Password:</label></td>
+     <td>{{ form.password }}</td>
+    </tr>
+  </table>
+
+  <input type="submit" value="Login" />
+  <input type="hidden" name="next" value="/center/" />
+  <!--input type="hidden" name="next" value="/center/accounts/profile" /-->
+  <!--input type="hidden" name="next" value="{{ next }}" /-->
+</form>
+
+{% endblock %}

@@ -1,0 +1,13 @@
+{% extends "center/baseTemplate.html" %}
+
+{% block title %}
+Account for
+{{ user.first_name }}
+{{ user.last_name }}
+{% endblock %}
+
+{% block content %}
+
+<p>Username: {{user.username}}</p>
+<p>Email Address: {{user.email}}</p>
+{% endblock %}

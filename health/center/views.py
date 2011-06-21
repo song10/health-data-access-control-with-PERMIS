@@ -23,11 +23,14 @@ def record (request):
 
 @staff_member_required
 def documents (request):
-	s = request.session
-	s['test'] = '123'
-	name = '%s'%s.loginname if hasattr(s, "loginname") else ''
+	s = request.session or {}
+	if "loginname" in s:
+		name = s['loginname']
+	else:
+		name = ''
+	t = {'test':'123', 'name':name, "session":s}
 	document_list = Document.objects.all().filter(owner=name).order_by('create_date')
-	return render_to_response('center/documents.html', {'document_list': document_list, 'session':s})
+	return render_to_response('center/documents.html', {'document_list': document_list, 'session':s, 'test':t})
 
 def detail (request, document_id):
 	d = get_object_or_404(Document, pk=document_id)
@@ -57,6 +60,9 @@ def setup_session (request):
 #	return render_to_response('center/session.html', context_instance=RequestContext(request))
 	return HttpResponseRedirect(reverse("health.center.views.documents"))
 
+def viewProfile (request):
+	return render_to_response('center/user_profile.html', {}, RequestContext(request))
+	
 #def set_session (request, pk):
 #	"""Add a new comment."""
 #	p = request.POST

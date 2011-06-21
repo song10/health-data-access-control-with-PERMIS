@@ -1,0 +1,39 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+  <head>
+    <meta http-equiv="Content-Type" content="text/html" charset="utf-8" />
+
+    <title>Simple Django Blog</title>
+
+    <!-- Load our color and font preferences -->
+    <link rel=StyleSheet href="/scripts/style.css" TYPE="text/css">
+  </head>
+
+  <body>
+    <h1>
+      <div class="title">
+              {% block title %}{% endblock %}
+      </div>
+    </h1>
+    <hr>
+
+    <div class="content">
+      {% block content %}{% endblock %}
+    </div>
+
+    <hr>
+    <div class="footer">
+      {% block footer %}
+        Return to <a href="/simpleblog">Top</a><br/>
+      {% endblock %}
+
+      {% if user.is_authenticated %}
+        <p><a href="{% url logout %}">Logout {{user.username }}</a></p>
+        <p><a href="{% url documents %}">Veiw {{user.username }}'s Documents</a></p>
+      {% else %}
+        <p><a href="{% url login %}">Login </a>here</p>
+        <p><a href="/center/accounts/newUser">Create new account </a>here</p>
+      {% endif %}
+    </div>
+  </body>
+</html>
