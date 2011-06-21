@@ -16,5 +16,6 @@ urlpatterns = patterns('',
 )
 
 urlpatterns += patterns('',
+    (r'^center/', include('health.center.urls')),
     (r'^his1/', include('health.his1.urls')),
 )
