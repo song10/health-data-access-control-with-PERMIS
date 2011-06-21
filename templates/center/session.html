@@ -1,0 +1,14 @@
+<h1>session setup</h1>
+
+{% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+
+<form action="{% url center.views.setup_session %}" method="POST">{% csrf_token %}
+    <div id="sessionform">
+        Name: {{ form.loginname }}
+        <p>
+	        Environment:        
+	        {{ form.environment|linebreaks }}
+        </p>
+    </div>
+    <div id="submit"><input type="submit" value="Submit"></div>
+</form>

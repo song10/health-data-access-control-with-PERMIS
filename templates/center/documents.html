@@ -1,0 +1,17 @@
+{% if session %}
+    <ul>
+        <li>{{ loginname }} : {{ session.loginname }}</li>
+        <li>{{ environment }} : {{ session.environment }}</li>
+        <li>{{ test }} : {{ session.test }}</li>
+    </ul>
+{% endif %}
+
+{% if document_list %}
+    <ul>
+    {% for document in document_list %}
+        <li><a href="/center/documents/{{ document.id }}/">{{ document.owner }}</a></li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>No polls are available.</p>
+{% endif %}
