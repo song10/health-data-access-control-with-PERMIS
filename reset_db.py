@@ -70,9 +70,10 @@ class Hospital (Thing):
 
 		global hospital_domain
 		self.dn = "cn=%s,%s"%(name, hospital_domain)
+		self.domain = "ou=%s,%s"%(name, hospital_domain)
 		
 	def add_doctor (self, name):
-		setattr(self.doctors, name, Doctor (name, self.dn))
+		setattr(self.doctors, name, Doctor (name, self.domain))
 		return getattr(self.doctors, name)
 	
 	def next_doctor (self):

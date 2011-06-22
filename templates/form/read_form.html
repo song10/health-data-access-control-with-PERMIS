@@ -1,0 +1,19 @@
+<h1>READ Policy Test</h1>
+
+{% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+
+<form action="{% url form.views.view_read_post %}" method="POST">{% csrf_token %}
+    <div id="form">
+		{{ form.as_p }}
+    </div>
+    
+	{% if documents %}
+    <p><label for="id_document">Document:</label> <select name="document" id="id_document">
+    	<option value="" selected="selected">---------</option>
+    	{% for document in documents %}
+    		<option value="{{ document.id }}">{{ document.owner }}_{{ document.author }}_{{ document.hospital }}</option>
+    	{% endfor %}
+    </select></p>
+    {% endif %}
+    <div id="submit"><input type="submit" value="READ"></div>
+</form>

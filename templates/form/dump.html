@@ -1,0 +1,20 @@
+<h1>dump</h1>
+
+{% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+
+{% if post %}
+    <ul>
+    {% for x,y in post.items %}
+        <li>{{ x }}: {{ y }}</li>
+    {% endfor %}
+    </ul>
+{% endif %}
+
+{% if session %}
+    <ul>
+    {% for x,y in session.items %}
+        <li>{{ x }}: {{ y }}</li>
+    {% endfor %}
+    </ul>
+{% endif %}
+

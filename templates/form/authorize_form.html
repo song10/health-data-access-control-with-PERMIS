@@ -1,0 +1,10 @@
+<h1>AUTHORIZE Policy Test</h1>
+
+{% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+
+<form action="{% url form.views.view_read_post %}" method="POST">{% csrf_token %}
+    <div id="form">
+		{{ form.as_p }}
+    </div>
+    <div id="submit"><input type="submit" value="WRITE"></div>
+</form>
