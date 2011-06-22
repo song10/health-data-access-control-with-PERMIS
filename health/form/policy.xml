@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- This PERMIS policy is to protect a web resource located at http://www.mysite.com. 
+	Users can be from anywhere and everyone can access the public part of the 
+	website. However, the members area (http://www.mysite.com/members/ and everything 
+	below it) is restriced to users who possess the (permisRole, member) role. 
+	This attribute has to be given to them by 'fred' (cn=fred,ou=www.mysite.com,c=gb) 
+	and can not be delegated. -->
+<X.509_PMI_RBAC_Policy OID="mysite-policy">
+	<SubjectPolicy>
+		<SubjectDomainSpec ID="everywhere">
+			<Include LDAPDN="" />
+		</SubjectDomainSpec>
+	</SubjectPolicy>
+	<RoleHierarchyPolicy>
+		<RoleSpec OID="1.2.826.0.1.3344810.1.1.14" Type="permisRole">
+			<SupRole Value="member" />
+		</RoleSpec>
+	</RoleHierarchyPolicy>
+	<SOAPolicy>
+		<SOASpec ID="fred" LDAPDN="cn=fred,ou=www.mysite.com,c=gb" />
+		<SOASpec ID="testuser" LDAPDN="cn=A PERMIS Test User,o=PERMISv5,c=gb" />
+	</SOAPolicy>
+	<RoleAssignmentPolicy>
+		<RoleAssignment>
+			<SubjectDomain ID="everywhere" />
+			<RoleList>
+				<Role Type="permisRole" />
+			</RoleList>
+			<Delegate Depth="0" />
+			<SOA ID="fred" />
+			<Validity />
+		</RoleAssignment>
+		<RoleAssignment>
+			<SubjectDomain ID="everywhere" />
+			<RoleList>
+				<Role Type="permisRole" />
+			</RoleList>
+			<Delegate Depth="0" />
+			<SOA ID="testuser" />
+			<Validity />
+		</RoleAssignment>
+	</RoleAssignmentPolicy>
+	<TargetPolicy>
+		<TargetDomainSpec ID="www.mysite.com">
+			<Include URL="http://www.mysite.com">
+				<Exclude URL="http://www.mysite.com/members" />
+			</Include>
+		</TargetDomainSpec>
+		<TargetDomainSpec ID="www.mysite.com/members">
+			<Include URL="http://www.mysite.com/members" />
+		</TargetDomainSpec>
+		<TargetDomainSpec ID="www.nctu.edu.tw/cs">
+			<Include URL="http://www.nctu.edu.tw/cs" />
+		</TargetDomainSpec>
+	</TargetPolicy>
+	<ActionPolicy>
+		<Action ID="GET" Name="GET" />
+		<Action ID="POST" Name="POST" />
+		<Action ID="HEAD" Name="HEAD" />
+		<Action ID="OPTIONS" Name="OPTIONS" />
+		<Action ID="DELETE" Name="DELETE" />
+		<Action ID="TRACE" Name="TRACE" />
+		<Action ID="PUT" Name="PUT" />
+		<Action ID="TEST" Name="TEST">
+			<Argument Name="arg0" Type="String" />
+			<Argument Name="arg1" Type="String" />
+		</Action>
+	</ActionPolicy>
+	<TargetAccessPolicy>
+		<TargetAccess>
+			<RoleList>
+				<Role Type="permisRole" Value="member" />
+			</RoleList>
+			<TargetList>
+				<Target>
+					<TargetDomain ID="www.mysite.com/members" />
+				</Target>
+			</TargetList>
+		</TargetAccess>
+		<TargetAccess>
+			<RoleList />
+			<TargetList>
+				<Target>
+					<TargetDomain ID="www.mysite.com" />
+				</Target>
+			</TargetList>
+		</TargetAccess>
+		<TargetAccess ID="TargetAccess1">
+			<RoleList>
+				<Role Type="permisRole" Value="member" />
+			</RoleList>
+			<TargetList>
+				<Target>
+					<TargetDomain ID="www.nctu.edu.tw/cs" />
+					<AllowedAction ID="TEST" />
+				</Target>
+			</TargetList>
+			<IF>
+				<AND>
+					<EQ>
+						<Constant Type="String" Value="testArg" />
+						<Arg Name="arg0" Type="String" />
+					</EQ>
+					<EQ>
+						<Constant Type="String" Value="testEnv" />
+						<Environment Parameter="env0" Type="String" />
+					</EQ>
+					<EQ>
+						<Arg Name="arg1" Type="String" />
+						<Environment Parameter="env1" Type="String" />
+					</EQ>
+				</AND>
+			</IF>
+		</TargetAccess>
+	</TargetAccessPolicy>
+</X.509_PMI_RBAC_Policy>

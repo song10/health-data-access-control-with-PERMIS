@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<X.509_PMI_RBAC_Policy OID="urn:nctu.edu.tw:permis:ehealth">
+	<SubjectPolicy>
+		<SubjectDomainSpec ID="citizen">
+			<Include LDAPDN="o=citizen,c=tw" />
+		</SubjectDomainSpec>
+		<SubjectDomainSpec ID="hospital">
+			<Include LDAPDN="o=hospital,c=tw" />
+		</SubjectDomainSpec>
+		<SubjectDomainSpec ID="sensor">
+			<Include LDAPDN="o=sensor,c=tw" />
+		</SubjectDomainSpec>
+		<SubjectDomainSpec ID="doctor">
+			<Include LDAPDN="ou=doctor,o=hospital,c=tw" />
+		</SubjectDomainSpec>
+	</SubjectPolicy>
+	<RoleHierarchyPolicy>
+		<RoleSpec OID="1.2.826.0.1.3344810.1.1.14" Type="permisRole">
+			<SupRole Value="patient" />
+			<SupRole Value="doctor" />
+			<SupRole Value="sensor" />
+			<SupRole Value="hospital" />
+		</RoleSpec>
+	</RoleHierarchyPolicy>
+	<SOAPolicy>
+		<SOASpec ID="song10" LDAPDN="cn=song10,ou=admin,o=goverment,c=tw" />
+	</SOAPolicy>
+	<RoleAssignmentPolicy>
+		<RoleAssignment ID="RoleAssignment1">
+			<SubjectDomain ID="citizen" />
+			<RoleList>
+				<Role Type="permisRole" Value="patient" />
+			</RoleList>
+			<Delegate />
+			<SOA ID="song10" />
+			<Validity />
+		</RoleAssignment>
+		<RoleAssignment ID="RoleAssignment2">
+			<SubjectDomain ID="doctor" />
+			<RoleList>
+				<Role Type="permisRole" Value="doctor" />
+			</RoleList>
+			<Delegate />
+			<SOA ID="song10" />
+			<Validity />
+		</RoleAssignment>
+		<RoleAssignment ID="RoleAssignment3">
+			<SubjectDomain ID="hospital" />
+			<RoleList>
+				<Role Type="permisRole" Value="hospital" />
+			</RoleList>
+			<Delegate />
+			<SOA ID="song10" />
+			<Validity />
+		</RoleAssignment>
+		<RoleAssignment ID="RoleAssignment4">
+			<SubjectDomain ID="sensor" />
+			<RoleList>
+				<Role Type="permisRole" Value="sensor" />
+			</RoleList>
+			<Delegate />
+			<SOA ID="song10" />
+			<Validity />
+		</RoleAssignment>
+	</RoleAssignmentPolicy>
+	<TargetPolicy>
+		<TargetDomainSpec ID="document">
+			<Include URL="http://localhost/center/document/" />
+		</TargetDomainSpec>
+		<TargetDomainSpec ID="record">
+			<Include URL="http://localhost/center/record/" />
+		</TargetDomainSpec>
+	</TargetPolicy>
+	<ActionPolicy>
+		<Action ID="read" Name="read">
+			<TargetDomain ID="document" />
+			<TargetDomain ID="record" />
+		</Action>
+		<Action ID="write" Name="write">
+			<TargetDomain ID="document" />
+		</Action>
+		<Action ID="authorize" Name="authorize">
+			<TargetDomain ID="record" />
+		</Action>
+	</ActionPolicy>
+	<TargetAccessPolicy>
+		<TargetAccess ID="patient can read own documents">
+			<RoleList>
+				<Role Type="permisRole" Value="patient" />
+			</RoleList>
+			<TargetList>
+				<Target>
+					<TargetDomain ID="document" />
+					<AllowedAction ID="read" />
+				</Target>
+			</TargetList>
+			<IF>
+				<AND>
+					<EQ>
+						<Environment Parameter="owner" Type="string" />
+						<Environment Parameter="principal" Type="string" />
+					</EQ>
+				</AND>
+			</IF>
+		</TargetAccess>
+		<TargetAccess ID="TargetAccess2">
+			<RoleList>
+				<Role Type="permisRole" Value="patient" />
+			</RoleList>
+			<TargetList>
+				<Target>
+					<TargetDomain ID="record" />
+					<AllowedAction ID="authorize" />
+				</Target>
+			</TargetList>
+			<IF>
+				<AND>
+					<EQ>
+						<Environment Parameter="owner" Type="string" />
+						<Environment Parameter="principal" Type="string" />
+					</EQ>
+				</AND>
+			</IF>
+		</TargetAccess>
+		<TargetAccess ID="TargetAccess3">
+			<RoleList>
+				<Role Type="permisRole" Value="doctor" />
+			</RoleList>
+			<TargetList>
+				<Target>
+					<TargetDomain ID="document" />
+					<AllowedAction ID="read" />
+				</Target>
+			</TargetList>
+			<IF>
+				<AND>
+					<EQ>
+						<Environment Parameter="owner" Type="string" />
+						<Environment Parameter="principal" Type="string" />
+					</EQ>
+				</AND>
+			</IF>
+		</TargetAccess>
+		<TargetAccess ID="TargetAccess4">
+			<RoleList>
+				<Role Type="permisRole" Value="hospital" />
+			</RoleList>
+			<TargetList>
+				<Target>
+					<TargetDomain ID="document" />
+					<AllowedAction ID="write" />
+				</Target>
+			</TargetList>
+			<IF>
+				<AND>
+					<EQ>
+						<Environment Parameter="owner" Type="string" />
+						<Environment Parameter="principal" Type="string" />
+					</EQ>
+				</AND>
+			</IF>
+		</TargetAccess>
+		<TargetAccess ID="TargetAccess5">
+			<RoleList>
+				<Role Type="permisRole" Value="sensor" />
+			</RoleList>
+			<TargetList>
+				<Target>
+					<TargetDomain ID="document" />
+					<AllowedAction ID="write" />
+				</Target>
+			</TargetList>
+			<IF>
+				<AND>
+					<EQ>
+						<Environment Parameter="owner" Type="string" />
+						<Environment Parameter="principal" Type="string" />
+					</EQ>
+				</AND>
+			</IF>
+		</TargetAccess>
+	</TargetAccessPolicy>
+</X.509_PMI_RBAC_Policy>
