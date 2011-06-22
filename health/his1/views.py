@@ -8,4 +8,4 @@ from django.contrib.admin.views.decorators import staff_member_required
 #@login_required
 @staff_member_required
 def record (request):
-    return HttpResponse("Hello, world. You're at the poll index.")
+	return HttpResponse("Hello, world. You're at the poll index.")

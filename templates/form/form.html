@@ -1,0 +1,10 @@
+<h1>session setup</h1>
+
+{% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+
+<form action="{% url form.views.post_form %}" method="POST">{% csrf_token %}
+    <div id="form">
+		{{ form.as_p }}
+    </div>
+    <div id="submit"><input type="submit" value="Submit"></div>
+</form>
