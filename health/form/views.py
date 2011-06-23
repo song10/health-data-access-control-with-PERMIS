@@ -27,24 +27,28 @@ def view_read (request):
 	return render_to_response('form/read_form.html', d)
 
 def view_read_post (request):
-#	return HttpResponse("form.views.view_read_post")
+	if request.method == 'POST': # If the form has been submitted
+		form = ReadForm(request.POST) # A form bound to the POST data
+		if not form.is_valid(): # All validation rules pass
+			p = request.POST
+			s = request.session or {}
+#			return render_to_response('form/dump.html', {'post':p})
+		#	return render_to_response('form/dump.html', {'post':p, 'session':s})
+	else:
+		return HttpResponse("form.views.view_read_post")
+		
 #	p = request.POST
-#	s = request.session or {}
-#	return render_to_response('form/dump.html', {'post':p})
-##	return render_to_response('form/dump.html', {'post':p, 'session':s})
 	req = Request ()
-	subj = Attribute (name=Permis.permisRole, type=Xacml.string, value='patient', issuer=My.issuer)
-	reso = Attribute (name=Xacml.resource_id, type=Xacml.string, value='http://localhost/center/document/10/')
+	subj = Attribute (name=Permis.permisRole, type=Xacml.string, value=p.get('role'), issuer=My.issuer)
+	reso = Attribute (name=Xacml.resource_id, type=Xacml.string, value='http://localhost/center/document/%s/'%p.get('document'))
 	acti = Attribute (name=Xacml.action_id, type=Xacml.string, value='read')
-	arg0 = Attribute (name='arg0', type='String', value='testArg')
-	arg1 = Attribute (name='arg1', type='String', value='testArgEnv Yes')
-	env0 = Attribute (name='env0', type='String', value='testEnv')
-	env1 = Attribute (name='env1', type='String', value='testArgEnv Yes')
+	env0 = Attribute (name='principal', type='string', value=p.get('principal'))
+	env1 = Attribute (name='owner', type='string', value=Document.objects.get(id=int(p.get('document'))).owner)
 	req.subject.Attributes.user = subj
 	req.resource.Attributes.res = reso
 	req.action.Attributes.act = acti
-	req.action.add_attribute(arg0)
-	req.action.add_attribute(arg1)
+#	req.action.add_attribute(arg0)
+#	req.action.add_attribute(arg1)
 	req.environment.add_attribute(env0)
 	req.environment.add_attribute(env1)
 #	req.say()

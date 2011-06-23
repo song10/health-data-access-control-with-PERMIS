@@ -170,7 +170,9 @@ def query (message):
 	url = "http://localhost:1104/axis2/services/AuthzService?wsdl" 
 	client = Client(url)
 #	print(client.content)
+	print(message)
 	client.service.XACMLAuthzRequest(__inject={'msg':message})
+	print('query2')
 	senddata = client.last_sent() 
 	recvdata = client.last_received() 
 #	f = file('ss.txt', 'wb') 

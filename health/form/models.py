@@ -40,11 +40,19 @@ DEPARTMENT_CHOICES = (
 	('ENT', 'ENT'),
 )
 
+ROLE_CHOICES = (
+	('patient' , 'patient' ),
+	('doctor'  , 'doctor'  ),
+	('sensor'  , 'sensor'  ),
+	('hospital', 'hospital'),
+)
+
 class Read (models.Model):
-	account = models.CharField(max_length=256, choices=PRINCIPAL_CHOICES)
+#	account = models.CharField(max_length=256, choices=PRINCIPAL_CHOICES)
+	role = models.CharField(max_length=256, choices=ROLE_CHOICES)
 	principal = models.CharField(max_length=256, choices=PRINCIPAL_CHOICES)
 	document = models.CharField(max_length=256, choices=[(x.id, x) for x in Document.objects.all().order_by('create_date')])
-	environment = models.TextField()
+#	environment = models.TextField()
 
 	def __unicode__ (self):
 		return self.name
