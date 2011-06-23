@@ -47,6 +47,11 @@ ROLE_CHOICES = (
 	('hospital', 'hospital'),
 )
 
+SETCLEAR_CHOICES = (
+	('set'   , 'set'  ),
+	('clear' , 'clear'),
+)
+
 class Read (models.Model):
 #	account = models.CharField(max_length=256, choices=PRINCIPAL_CHOICES)
 	role = models.CharField(max_length=256, choices=ROLE_CHOICES)
@@ -71,7 +76,7 @@ class Write (models.Model):
 	create_date = models.DateTimeField()
 	publish_date = models.DateTimeField()
 	prescription = models.TextField()
-	environment = models.TextField()
+#	environment = models.TextField()
 
 	def __unicode__ (self):
 		return self.account
@@ -83,10 +88,11 @@ class WriteForm (ModelForm):
 
 class Authorize (models.Model):
 	account = models.CharField(max_length=256, choices=PRINCIPAL_CHOICES)
-	hospital = models.CharField(max_length=256, choices=PRINCIPAL_CHOICES)
+	set = models.CharField(max_length=256, choices=SETCLEAR_CHOICES)
 	doctor = models.CharField(max_length=256, choices=PRINCIPAL_CHOICES)
+	hospital = models.CharField(max_length=256, choices=PRINCIPAL_CHOICES)
 	type = models.CharField(max_length=256, choices=TYPE_CHOICES)
-	environment = models.TextField()
+#	environment = models.TextField()
 
 	def __unicode__(self):
 		return self.account

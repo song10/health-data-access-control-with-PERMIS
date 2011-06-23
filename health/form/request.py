@@ -1,5 +1,6 @@
 #!/usr/bin/python
-# -*- coding: utf-8 -*-
+# -*- 
+#coding: utf-8 -*-
 
 '''
 Created on Jun 3, 2011
@@ -169,30 +170,27 @@ Decision="%(Decision)s", StatusCode="%(StatusCode)s"'''
 def query (message): 
 	url = "http://localhost:1104/axis2/services/AuthzService?wsdl" 
 	client = Client(url)
-#	print(client.content)
-	print(message)
-	client.service.XACMLAuthzRequest(__inject={'msg':message})
-	print('query2')
-	senddata = client.last_sent() 
+	client.service.XACMLAuthzRequest(__inject={'msg':message.encode()})
 	recvdata = client.last_received() 
+#	senddata = client.last_sent() 
 #	f = file('ss.txt', 'wb') 
 #	f.write(str(senddata)) 
 #	f.close() 
-	print senddata 
-	print '--------------------------------' 
-	print recvdata
-	print '--------------------------------' 
+#	print senddata 
+#	print '--------------------------------' 
+#	print recvdata
+#	print '--------------------------------' 
 	return recvdata 
 
 if __name__ == '__main__':
 	req = Request ()
 	subj = Attribute (name=Permis.permisRole, type=Xacml.string, value='patient', issuer=My.issuer)
-	reso = Attribute (name=Xacml.resource_id, type=Xacml.string, value='http://localhost/center/document/10/')
+	reso = Attribute (name=Xacml.resource_id, type=Xacml.string, value='http://localhost/center/document/6/')
 	acti = Attribute (name=Xacml.action_id, type=Xacml.string, value='read')
 	arg0 = Attribute (name='arg0', type='String', value='testArg')
 	arg1 = Attribute (name='arg1', type='String', value='testArgEnv Yes')
-	env0 = Attribute (name='principal', type='string', value='xxx')
-	env1 = Attribute (name='owner', type='string', value='xxx')
+	env0 = Attribute (name='principal', type='string', value='cn=Bruce,o=Citizen,c=Taiwan')
+	env1 = Attribute (name='owner', type='string', value='cn=Bruce,o=Citizen,c=Taiwan')
 	env2 = Attribute (name='test', type='string', value='123')
 	req.subject.Attributes.user = subj
 	req.resource.Attributes.res = reso
@@ -201,7 +199,7 @@ if __name__ == '__main__':
 #	req.action.add_attribute(arg1)
 	req.environment.add_attribute(env0)
 	req.environment.add_attribute(env1)
-	req.environment.add_attribute(env2)
+#	req.environment.add_attribute(env2)
 #	req.say()
 	pass
 

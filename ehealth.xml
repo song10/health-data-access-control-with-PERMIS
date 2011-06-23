@@ -84,7 +84,7 @@
 		</Action>
 	</ActionPolicy>
 	<TargetAccessPolicy>
-		<TargetAccess ID="patient can read own documents">
+		<TargetAccess ID="A patient can read own documents">
 			<RoleList>
 				<Role Type="permisRole" Value="patient" />
 			</RoleList>
@@ -103,13 +103,13 @@
 				</AND>
 			</IF>
 		</TargetAccess>
-		<TargetAccess ID="TargetAccess2">
+		<TargetAccess ID="A patient can authorize own record read to doctors">
 			<RoleList>
 				<Role Type="permisRole" Value="patient" />
 			</RoleList>
 			<TargetList>
 				<Target>
-					<TargetDomain ID="record" />
+					<TargetDomain ID="record" ></TargetDomain>
 					<AllowedAction ID="authorize" />
 				</Target>
 			</TargetList>
@@ -117,12 +117,12 @@
 				<AND>
 					<EQ>
 						<Environment Parameter="owner" Type="string" />
-						<Environment Parameter="principal" Type="string" />
+						<Environment Parameter="principal" Type="string" ></Environment>
 					</EQ>
 				</AND>
 			</IF>
 		</TargetAccess>
-		<TargetAccess ID="TargetAccess3">
+		<TargetAccess ID="A doctor can read own composed documents">
 			<RoleList>
 				<Role Type="permisRole" Value="doctor" />
 			</RoleList>
@@ -134,14 +134,20 @@
 			</TargetList>
 			<IF>
 				<AND>
-					<EQ>
-						<Environment Parameter="owner" Type="string" />
-						<Environment Parameter="principal" Type="string" />
-					</EQ>
+					<OR>
+						<EQ>
+							<Environment Parameter="author" Type="string" />
+							<Environment Parameter="principal" Type="string" />
+						</EQ>
+						<EQ>
+							<Constant Type="string" Value="true" />
+							<Environment Parameter="authorized" Type="string" />
+						</EQ>
+					</OR>
 				</AND>
 			</IF>
 		</TargetAccess>
-		<TargetAccess ID="TargetAccess4">
+		<TargetAccess ID="A hospital can write own domain documents to center">
 			<RoleList>
 				<Role Type="permisRole" Value="hospital" />
 			</RoleList>
@@ -154,13 +160,13 @@
 			<IF>
 				<AND>
 					<EQ>
-						<Environment Parameter="owner" Type="string" />
+						<Environment Parameter="hospital" Type="string" />
 						<Environment Parameter="principal" Type="string" />
 					</EQ>
 				</AND>
 			</IF>
 		</TargetAccess>
-		<TargetAccess ID="TargetAccess5">
+		<TargetAccess ID="A sensor can write own domain test document to server">
 			<RoleList>
 				<Role Type="permisRole" Value="sensor" />
 			</RoleList>
@@ -173,8 +179,16 @@
 			<IF>
 				<AND>
 					<EQ>
-						<Environment Parameter="owner" Type="string" />
+						<Environment Parameter="hospital" Type="string" />
 						<Environment Parameter="principal" Type="string" />
+					</EQ>
+					<EQ>
+						<Constant Type="string" Value="test" />
+						<Environment Parameter="type" Type="string" />
+					</EQ>
+					<EQ>
+						<Constant Type="string" Value="true" />
+						<Environment Parameter="authorized" Type="string" />
 					</EQ>
 				</AND>
 			</IF>

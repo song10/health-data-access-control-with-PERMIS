@@ -1,3 +1,5 @@
+# -*- 
+#coding: utf-8 -*-
 from django.shortcuts import render_to_response, get_object_or_404
 from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib.admin.views.decorators import staff_member_required
@@ -9,14 +11,6 @@ from django.forms import ModelForm
 from form.request import *
 from form.models import *
 from center.models import *
-
-def show_form (request):
-	d = dict(form=AuthorForm ())
-	d.update(csrf(request))
-	return render_to_response('form/form.html', d)
-
-def post_form (request):
-	return HttpResponse("form.views.post_form")
 
 def view_read (request):
 #	return HttpResponse("form.views.view_read")
@@ -38,12 +32,14 @@ def view_read_post (request):
 		return HttpResponse("form.views.view_read_post")
 		
 #	p = request.POST
+	doc = Document.objects.get(id=int(p.get('document')))
 	req = Request ()
 	subj = Attribute (name=Permis.permisRole, type=Xacml.string, value=p.get('role'), issuer=My.issuer)
 	reso = Attribute (name=Xacml.resource_id, type=Xacml.string, value='http://localhost/center/document/%s/'%p.get('document'))
 	acti = Attribute (name=Xacml.action_id, type=Xacml.string, value='read')
 	env0 = Attribute (name='principal', type='string', value=p.get('principal'))
-	env1 = Attribute (name='owner', type='string', value=Document.objects.get(id=int(p.get('document'))).owner)
+	env1 = Attribute (name='owner', type='string', value=doc.owner)
+	env2 = Attribute (name='author', type='string', value=doc.author)
 	req.subject.Attributes.user = subj
 	req.resource.Attributes.res = reso
 	req.action.Attributes.act = acti
@@ -51,6 +47,7 @@ def view_read_post (request):
 #	req.action.add_attribute(arg1)
 	req.environment.add_attribute(env0)
 	req.environment.add_attribute(env1)
+	req.environment.add_attribute(env2)
 #	req.say()
 	res = query(req.say(quiet=True))
 	dec = Response (res).say(quiet=True)
