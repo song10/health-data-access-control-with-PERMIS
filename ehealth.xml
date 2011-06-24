@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<X.509_PMI_RBAC_Policy OID="urn:nctu.edu.tw:permis:ehealth">
+<X.509_PMI_RBAC_Policy OID="urn:permis.zapto.org:permis:ehealth">
 	<SubjectPolicy>
-		<SubjectDomainSpec ID="citizen">
+		<SubjectDomainSpec ID="patient">
 			<Include LDAPDN="o=citizen,c=tw" />
 		</SubjectDomainSpec>
 		<SubjectDomainSpec ID="hospital">
@@ -27,7 +27,7 @@
 	</SOAPolicy>
 	<RoleAssignmentPolicy>
 		<RoleAssignment ID="RoleAssignment1">
-			<SubjectDomain ID="citizen" />
+			<SubjectDomain ID="patient" />
 			<RoleList>
 				<Role Type="permisRole" Value="patient" />
 			</RoleList>
@@ -65,10 +65,10 @@
 	</RoleAssignmentPolicy>
 	<TargetPolicy>
 		<TargetDomainSpec ID="document">
-			<Include URL="http://localhost/center/document/" />
+			<Include URL="http://localhost/center/document" />
 		</TargetDomainSpec>
 		<TargetDomainSpec ID="record">
-			<Include URL="http://localhost/center/record/" />
+			<Include URL="http://localhost/center/record" />
 		</TargetDomainSpec>
 	</TargetPolicy>
 	<ActionPolicy>
@@ -97,8 +97,8 @@
 			<IF>
 				<AND>
 					<EQ>
-						<Environment Parameter="owner" Type="string" />
-						<Environment Parameter="principal" Type="string" />
+						<Environment Parameter="owner" Type="String" />
+						<Environment Parameter="subject" Type="String" />
 					</EQ>
 				</AND>
 			</IF>
@@ -109,15 +109,15 @@
 			</RoleList>
 			<TargetList>
 				<Target>
-					<TargetDomain ID="record" ></TargetDomain>
+					<TargetDomain ID="record" />
 					<AllowedAction ID="authorize" />
 				</Target>
 			</TargetList>
 			<IF>
 				<AND>
 					<EQ>
-						<Environment Parameter="owner" Type="string" />
-						<Environment Parameter="principal" Type="string" ></Environment>
+						<Environment Parameter="owner" Type="String" />
+						<Environment Parameter="subject" Type="String" />
 					</EQ>
 				</AND>
 			</IF>
@@ -133,18 +133,16 @@
 				</Target>
 			</TargetList>
 			<IF>
-				<AND>
-					<OR>
-						<EQ>
-							<Environment Parameter="author" Type="string" />
-							<Environment Parameter="principal" Type="string" />
-						</EQ>
-						<EQ>
-							<Constant Type="string" Value="true" />
-							<Environment Parameter="authorized" Type="string" />
-						</EQ>
-					</OR>
-				</AND>
+				<OR>
+					<EQ>
+						<Environment Parameter="author" Type="String" />
+						<Environment Parameter="subject" Type="String" />
+					</EQ>
+					<EQ>
+						<Constant Type="String" Value="true" />
+						<Environment Parameter="authorized" Type="String" />
+					</EQ>
+				</OR>
 			</IF>
 		</TargetAccess>
 		<TargetAccess ID="A hospital can write own domain documents to center">
@@ -160,8 +158,8 @@
 			<IF>
 				<AND>
 					<EQ>
-						<Environment Parameter="hospital" Type="string" />
-						<Environment Parameter="principal" Type="string" />
+						<Environment Parameter="hospital" Type="String" />
+						<Environment Parameter="subject" Type="String" />
 					</EQ>
 				</AND>
 			</IF>
@@ -179,16 +177,16 @@
 			<IF>
 				<AND>
 					<EQ>
-						<Environment Parameter="hospital" Type="string" />
-						<Environment Parameter="principal" Type="string" />
+						<Environment Parameter="hospital" Type="String" />
+						<Environment Parameter="subject" Type="String" />
 					</EQ>
 					<EQ>
-						<Constant Type="string" Value="test" />
-						<Environment Parameter="type" Type="string" />
+						<Constant Type="String" Value="test" />
+						<Environment Parameter="type" Type="String" />
 					</EQ>
 					<EQ>
-						<Constant Type="string" Value="true" />
-						<Environment Parameter="authorized" Type="string" />
+						<Constant Type="String" Value="true" />
+						<Environment Parameter="authorized" Type="String" />
 					</EQ>
 				</AND>
 			</IF>

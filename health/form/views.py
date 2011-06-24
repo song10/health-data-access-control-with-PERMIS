@@ -40,6 +40,7 @@ def view_read_post (request):
 	env0 = Attribute (name='principal', type='string', value=p.get('principal'))
 	env1 = Attribute (name='owner', type='string', value=doc.owner)
 	env2 = Attribute (name='author', type='string', value=doc.author)
+	env3 = Attribute (name='authorized', type='string', value='false')
 	req.subject.Attributes.user = subj
 	req.resource.Attributes.res = reso
 	req.action.Attributes.act = acti
@@ -51,7 +52,8 @@ def view_read_post (request):
 #	req.say()
 	res = query(req.say(quiet=True))
 	dec = Response (res).say(quiet=True)
-	return HttpResponse("%s"%dec)
+	return render_to_response('form/dump.html', {'post':p, 'session':s, 'error_message':dec})
+#	return HttpResponse(dec)
 
 
 def view_write (request):
