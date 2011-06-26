@@ -3,30 +3,34 @@ from django.forms import ModelForm
 from center.models import *
 
 #ACCOUNT_CHOICES = (
-#	('cn=Alice,o=Citizen,c=Taiwan', 'Alice'),
-#	('cn=Bruce,o=Citizen,c=Taiwan', 'Bruce'),
-#	('cn=Clark,o=Citizen,c=Taiwan', 'Clark'),
+#	('cn=Alice,o=citizen,c=tw', 'Alice'),
+#	('cn=Bruce,o=citizen,c=tw', 'Bruce'),
+#	('cn=Clark,o=citizen,c=tw', 'Clark'),
 #)
 
-PRINCIPAL_CHOICES = (
+SUBJECT_CHOICES = (
 	# patient
-	('cn=Alice,o=Citizen,c=Taiwan', 'Alice'),
-	('cn=Bruce,o=Citizen,c=Taiwan', 'Bruce'),
-	('cn=Clark,o=Citizen,c=Taiwan', 'Clark'),
+	('cn=Alice,o=citizen,c=tw', 'Alice'),
+	('cn=Bruce,o=citizen,c=tw', 'Bruce'),
+	('cn=Clark,o=citizen,c=tw', 'Clark'),
 	# doctor
-	('cn=Talon,ou=Taipei,o=Hospital,c=Taiwan'    , 'Talon'),
-	('cn=Stella,ou=Taipei,o=Hospital,c=Taiwan'   , 'Stella'),
-	('cn=Nicholas,ou=Taipei,o=Hospital,c=Taiwan' , 'Nicholas'),
-	('cn=Max,ou=Taichung,o=Hospital,c=Taiwan'    , 'Max'),
-	('cn=Russell,ou=Taichung,o=Hospital,c=Taiwan', 'Russell'),
-	('cn=Lana,ou=Taichung,o=Hospital,c=Taiwan'   , 'Lana'),
-	('cn=Ruby,ou=Tainan,o=Hospital,c=Taiwan'     , 'Ruby'),
-	('cn=Julia,ou=Tainan,o=Hospital,c=Taiwan'    , 'Julia'),
-	('cn=Joe,ou=Tainan,o=Hospital,c=Taiwan'      , 'Joe'),
+	('cn=Talon,ou=Taipei,o=hospital,c=tw'    , 'Talon'),
+	('cn=Stella,ou=Taipei,o=hospital,c=tw'   , 'Stella'),
+	('cn=Nicholas,ou=Taipei,o=hospital,c=tw' , 'Nicholas'),
+	('cn=Max,ou=Taichung,o=hospital,c=tw'    , 'Max'),
+	('cn=Russell,ou=Taichung,o=hospital,c=tw', 'Russell'),
+	('cn=Lana,ou=Taichung,o=hospital,c=tw'   , 'Lana'),
+	('cn=Ruby,ou=Tainan,o=hospital,c=tw'     , 'Ruby'),
+	('cn=Julia,ou=Tainan,o=hospital,c=tw'    , 'Julia'),
+	('cn=Joe,ou=Tainan,o=hospital,c=tw'      , 'Joe'),
 	# hospital
-	('cn=Taipei,o=Hospital,c=Taiwan'  , 'Taipei'),
-	('cn=Taichung,o=Hospital,c=Taiwan', 'Taichung'),
-	('cn=Tainan,o=Hospital,c=Taiwan'  , 'Tainan'),
+	('cn=Taipei,o=hospital,c=tw'  , 'Taipei'),
+	('cn=Taichung,o=hospital,c=tw', 'Taichung'),
+	('cn=Tainan,o=hospital,c=tw'  , 'Tainan'),
+	# sensor
+	('cn=S100,o=sensor,c=tw', 'S100'),
+	('cn=S301,o=sensor,c=tw', 'S301'),
+	('cn=S703,o=sensor,c=tw', 'S703'),
 )
 
 TYPE_CHOICES = (
@@ -52,10 +56,20 @@ SETCLEAR_CHOICES = (
 	('clear' , 'clear'),
 )
 
-class Read (models.Model):
-#	account = models.CharField(max_length=256, choices=PRINCIPAL_CHOICES)
+class Rule1 (models.Model):
+	subject = models.CharField(max_length=256, choices=SUBJECT_CHOICES)
 	role = models.CharField(max_length=256, choices=ROLE_CHOICES)
-	principal = models.CharField(max_length=256, choices=PRINCIPAL_CHOICES)
+	document = models.IntegerField(max_length=256, choices=[(x.id, x) for x in Document.objects.all().order_by('create_date')])
+#	environment = models.TextField()
+
+class FormRule1 (ModelForm):
+	class Meta:
+		model = Rule1
+
+class Read (models.Model):
+#	account = models.CharField(max_length=256, choices=SUBJECT_CHOICES)
+	role = models.CharField(max_length=256, choices=ROLE_CHOICES)
+	principal = models.CharField(max_length=256, choices=SUBJECT_CHOICES)
 	document = models.CharField(max_length=256, choices=[(x.id, x) for x in Document.objects.all().order_by('create_date')])
 #	environment = models.TextField()
 
@@ -67,10 +81,10 @@ class ReadForm (ModelForm):
 		model = Read
 
 class Write (models.Model):
-	account = models.CharField(max_length=256, choices=PRINCIPAL_CHOICES)
-	hospital = models.CharField(max_length=256, choices=PRINCIPAL_CHOICES)
+	account = models.CharField(max_length=256, choices=SUBJECT_CHOICES)
+	hospital = models.CharField(max_length=256, choices=SUBJECT_CHOICES)
 	department = models.CharField(max_length=256, choices=DEPARTMENT_CHOICES)
-	doctor = models.CharField(max_length=256, choices=PRINCIPAL_CHOICES)
+	doctor = models.CharField(max_length=256, choices=SUBJECT_CHOICES)
 	patient = models.ForeignKey(Record)
 	type = models.CharField(max_length=256, choices=TYPE_CHOICES)
 	create_date = models.DateTimeField()
@@ -87,10 +101,10 @@ class WriteForm (ModelForm):
 #		exclude = ('owner', 'author', 'hospital', 'type', 'department')
 
 class Authorize (models.Model):
-	account = models.CharField(max_length=256, choices=PRINCIPAL_CHOICES)
+	account = models.CharField(max_length=256, choices=SUBJECT_CHOICES)
 	set = models.CharField(max_length=256, choices=SETCLEAR_CHOICES)
-	doctor = models.CharField(max_length=256, choices=PRINCIPAL_CHOICES)
-	hospital = models.CharField(max_length=256, choices=PRINCIPAL_CHOICES)
+	doctor = models.CharField(max_length=256, choices=SUBJECT_CHOICES)
+	hospital = models.CharField(max_length=256, choices=SUBJECT_CHOICES)
 	type = models.CharField(max_length=256, choices=TYPE_CHOICES)
 #	environment = models.TextField()
 

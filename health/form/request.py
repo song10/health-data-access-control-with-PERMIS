@@ -187,11 +187,11 @@ if __name__ == '__main__':
 	subj = Attribute (name=Permis.permisRole, type=Xacml.string, value='patient', issuer=My.issuer)
 	reso = Attribute (name=Xacml.resource_id, type=Xacml.string, value='http://localhost/center/document/6/')
 	acti = Attribute (name=Xacml.action_id, type=Xacml.string, value='read')
-	arg0 = Attribute (name='arg0', type='String', value='testArg')
-	arg1 = Attribute (name='arg1', type='String', value='testArgEnv Yes')
-	env0 = Attribute (name='principal', type='string', value='cn=Bruce,o=Citizen,c=Taiwan')
-	env1 = Attribute (name='owner', type='string', value='cn=Bruce,o=Citizen,c=Taiwan')
-	env2 = Attribute (name='test', type='string', value='123')
+#	arg0 = Attribute (name='arg0', type='String', value='testArg')
+#	arg1 = Attribute (name='arg1', type='String', value='testArgEnv Yes')
+	env0 = Attribute (name='subject', type='String', value='cn=Bruce,o=citizen,c=tw')
+	env1 = Attribute (name='owner', type='String', value='cn=Bruce,o=citizen,c=tw')
+	env2 = Attribute (name='test', type='String', value='123')
 	req.subject.Attributes.user = subj
 	req.resource.Attributes.res = reso
 	req.action.Attributes.act = acti

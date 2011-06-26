@@ -14,7 +14,7 @@ hospital_names = [
 	'Tainan',
 ]
 
-hospital_domain = 'o=Hospital,c=Taiwan'
+hospital_domain = 'o=hospital,c=tw'
 
 doctor_names = {
 	'Taipei'  : [ 'Talon', 'Stella', 'Nicholas', ],
@@ -26,7 +26,7 @@ patient_names = [
 	'Alice', 'Bruce', 'Clark',
 ]
 
-patient_domain = 'o=Citizen,c=Taiwan'
+patient_domain = 'o=citizen,c=tw'
 
 document_types = [ 'prescription', 'test', ]
 

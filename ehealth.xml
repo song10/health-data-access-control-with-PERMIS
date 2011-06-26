@@ -84,7 +84,7 @@
 		</Action>
 	</ActionPolicy>
 	<TargetAccessPolicy>
-		<TargetAccess ID="A patient can read own documents">
+		<TargetAccess ID="A patient can read her own documents">
 			<RoleList>
 				<Role Type="permisRole" Value="patient" />
 			</RoleList>

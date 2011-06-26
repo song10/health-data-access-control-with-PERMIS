@@ -9,4 +9,6 @@ urlpatterns = patterns('form.views',
 	url(r'^read/post/$', 'view_read_post'),
 	url(r'^write/post/$', 'view_write_post'),
 	url(r'^authorize/post/$', 'view_authorize_post'),
+
+	url(r'^rule1/$', 'view_rule1'),
 )

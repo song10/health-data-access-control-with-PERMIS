@@ -1,0 +1,21 @@
+{% if title %}<h1>{{ rule }} : {{ title }}</h1></p>{% endif %}
+
+{% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+
+{% if result %}<p><strong>{{ result }}</strong></p>{% endif %}
+
+{% if form %}
+<form action="{% url form.views.view_rule1 %}" method="POST">{% csrf_token %}
+    <div id="form">
+		{{ form.as_p }}
+    </div>
+    <div id="submit"><input type="submit" value="Test {{ rule }}"></div>
+</form>
+{% endif %}
+
+{% if request %}
+<p><strong>Request:</strong></p>
+{% for x in request %}
+{{ x.say }}
+{% endfor %}
+{% endif %}
