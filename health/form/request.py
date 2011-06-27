@@ -116,7 +116,33 @@ class Request (Thing):
 		self.resource = Resource ()
 		self.action = Action ()
 		self.environment = Environment ()
-		
+
+	def __unicode__ (self):
+		template = '<li>%(name)s : %(value)s %(type)s</li>'
+		env = ''
+		for x in sorted(self.environment.Attributes):
+			y = self.environment.Attributes.get(x)
+			d = {'name':y.name, 'value':y.value, 'type':"(%s)"%y.type}
+			d['type'] = ''
+			s = template % d
+			env += s
+
+		template = '''
+<ul>
+<li>Role : %(role)s</li>
+<li>Action : %(action)s</li>
+<li>Resource: %(resource)s</li>
+%(env)s
+</ul>
+'''
+		d = dict(
+				role=self.subject.Attributes.user.value,
+				resource=self.resource.Attributes.res.value,
+				action=self.action.Attributes.act.value,
+				env=env,
+				)
+		return template % d
+
 	def say (self, **args):
 		template = '''\
 <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"
@@ -192,7 +218,7 @@ if __name__ == '__main__':
 	env0 = Attribute (name='subject', type='String', value='cn=Bruce,o=citizen,c=tw')
 	env1 = Attribute (name='owner', type='String', value='cn=Bruce,o=citizen,c=tw')
 	env2 = Attribute (name='test', type='String', value='123')
-	req.subject.Attributes.user = subj
+	req.subject.Attributes.role = subj
 	req.resource.Attributes.res = reso
 	req.action.Attributes.act = acti
 #	req.action.add_attribute(arg0)

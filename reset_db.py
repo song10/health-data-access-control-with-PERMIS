@@ -12,6 +12,7 @@ hospital_names = [
 	'Taipei',
 	'Taichung',
 	'Tainan',
+	'Sensor', # virtual hospital for sensors
 ]
 
 hospital_domain = 'o=hospital,c=tw'
@@ -20,6 +21,7 @@ doctor_names = {
 	'Taipei'  : [ 'Talon', 'Stella', 'Nicholas', ],
 	'Taichung': [ 'Max', 'Russell', 'Lana', ],
 	'Tainan'  : [ 'Ruby', 'Julia', 'Joe', ],
+	'Sensor'  : [ 'S100', 'S301', 'S703', ], # virtual doctors
 }
 
 patient_names = [
@@ -28,7 +30,7 @@ patient_names = [
 
 patient_domain = 'o=citizen,c=tw'
 
-document_types = [ 'prescription', 'test', ]
+document_types = [ 'prescription', 'test', 'unknown']
 
 class Thing (object):
 	def __iter__ (self):
@@ -118,6 +120,8 @@ class Patient (Thing):
 		d = self.record.document_set.create(**map)
 		d.save()
 		print('add document %s by %s at %s'%(d.owner, d.author, d.hospital))
+		return d
+		
 	pass
 
 class HospitalGen (Thing):
@@ -204,11 +208,16 @@ for count in range(100):
 	hos = hosgen.next()
 	dr  = hos.next_doctor()
 
-	man.add_document(
+	doc = man.add_document(
 		create_date=day,
 		author=dr,
 		hospital=hos,
 		prescription='test #%u'%man.next_index(),
 		publish_date=datetime.datetime.now(),
 	)
+	
+	if 'unknown' == doc.type:
+		global document_types
+		del document_types[-1]
+
 print('done')

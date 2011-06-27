@@ -52,3 +52,10 @@ class Thing (object):
 #        if not hasattr(self, name):
 #            return
         del self.__dict__[name]
+
+    def items (self):
+        return self.__dict__.items()
+
+#    def test (self):
+#        return "Thing.test"
+    

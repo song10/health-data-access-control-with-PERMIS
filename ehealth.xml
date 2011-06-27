@@ -103,7 +103,7 @@
 				</AND>
 			</IF>
 		</TargetAccess>
-		<TargetAccess ID="A patient can authorize own record read to doctors">
+		<TargetAccess ID="A patient can authorize her own record read to doctors">
 			<RoleList>
 				<Role Type="permisRole" Value="patient" />
 			</RoleList>
@@ -122,7 +122,7 @@
 				</AND>
 			</IF>
 		</TargetAccess>
-		<TargetAccess ID="A doctor can read own composed documents">
+		<TargetAccess ID="A doctor can read her own composed or patient authorized documents">
 			<RoleList>
 				<Role Type="permisRole" Value="doctor" />
 			</RoleList>
@@ -145,7 +145,7 @@
 				</OR>
 			</IF>
 		</TargetAccess>
-		<TargetAccess ID="A hospital can write own domain documents to center">
+		<TargetAccess ID="A hospital can write her own domain documents">
 			<RoleList>
 				<Role Type="permisRole" Value="hospital" />
 			</RoleList>
@@ -164,7 +164,7 @@
 				</AND>
 			</IF>
 		</TargetAccess>
-		<TargetAccess ID="A sensor can write own domain test document to server">
+		<TargetAccess ID="A sensor can write own domain test documents to authorized records">
 			<RoleList>
 				<Role Type="permisRole" Value="sensor" />
 			</RoleList>
@@ -177,7 +177,7 @@
 			<IF>
 				<AND>
 					<EQ>
-						<Environment Parameter="hospital" Type="String" />
+						<Environment Parameter="author" Type="String" />
 						<Environment Parameter="subject" Type="String" />
 					</EQ>
 					<EQ>

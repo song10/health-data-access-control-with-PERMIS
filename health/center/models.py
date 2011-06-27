@@ -26,7 +26,8 @@ class Document (models.Model):
 		owner = re.match(r'cn=(\w+)', self.owner).group(1) or '?'
 		author = re.match(r'cn=(\w+)', self.author).group(1) or '?'
 		hospital = re.match(r'cn=(\w+)', self.hospital).group(1) or '?'
-		return "%s %s %s"%(owner, author, hospital)
+		type = self.type
+		return "%s %s %s %s"%(owner, author, hospital, type)
 
 class Session (models.Model):
 	loginname = models.CharField(max_length=200)

@@ -13,6 +13,7 @@ SUBJECT_CHOICES = (
 	('cn=Alice,o=citizen,c=tw', 'Alice'),
 	('cn=Bruce,o=citizen,c=tw', 'Bruce'),
 	('cn=Clark,o=citizen,c=tw', 'Clark'),
+	('cn=guest,o=patient,c=tw', 'guest'), # test
 	# doctor
 	('cn=Talon,ou=Taipei,o=hospital,c=tw'    , 'Talon'),
 	('cn=Stella,ou=Taipei,o=hospital,c=tw'   , 'Stella'),
@@ -23,19 +24,22 @@ SUBJECT_CHOICES = (
 	('cn=Ruby,ou=Tainan,o=hospital,c=tw'     , 'Ruby'),
 	('cn=Julia,ou=Tainan,o=hospital,c=tw'    , 'Julia'),
 	('cn=Joe,ou=Tainan,o=hospital,c=tw'      , 'Joe'),
+#	('cn=guest,ou=Tainan,o=hospital,c=tw'    , 'guest'), # test
 	# hospital
 	('cn=Taipei,o=hospital,c=tw'  , 'Taipei'),
 	('cn=Taichung,o=hospital,c=tw', 'Taichung'),
 	('cn=Tainan,o=hospital,c=tw'  , 'Tainan'),
 	# sensor
-	('cn=S100,o=sensor,c=tw', 'S100'),
-	('cn=S301,o=sensor,c=tw', 'S301'),
-	('cn=S703,o=sensor,c=tw', 'S703'),
+	('cn=S100,ou=Sensor,o=hospital,c=tw', 'S100'),
+	('cn=S301,ou=Sensor,o=hospital,c=tw', 'S301'),
+	('cn=S703,ou=Sensor,o=hospital,c=tw', 'S703'),
 )
 
 TYPE_CHOICES = (
 	('prescription', 'prescription'),
 	('test', 'test'),
+	('all', 'all'),
+	('unknown', 'unknown'),
 )
 
 DEPARTMENT_CHOICES = (
@@ -49,16 +53,25 @@ ROLE_CHOICES = (
 	('doctor'  , 'doctor'  ),
 	('sensor'  , 'sensor'  ),
 	('hospital', 'hospital'),
+	('guest'   , 'guest'),
 )
 
-SETCLEAR_CHOICES = (
+ACTION_CHOICES = (
 	('set'   , 'set'  ),
 	('clear' , 'clear'),
 )
 
+BOOLING_CHOICES = (
+	('true' , 'true' ),
+	('false', 'false'),
+)
+
 class Rule1 (models.Model):
-	subject = models.CharField(max_length=256, choices=SUBJECT_CHOICES)
+	'''
+	A patient can read her own documents
+	'''
 	role = models.CharField(max_length=256, choices=ROLE_CHOICES)
+	subject = models.CharField(max_length=256, choices=SUBJECT_CHOICES)
 	document = models.IntegerField(max_length=256, choices=[(x.id, x) for x in Document.objects.all().order_by('create_date')])
 #	environment = models.TextField()
 
@@ -66,52 +79,59 @@ class FormRule1 (ModelForm):
 	class Meta:
 		model = Rule1
 
-class Read (models.Model):
-#	account = models.CharField(max_length=256, choices=SUBJECT_CHOICES)
+class Rule2 (models.Model):
+	'''
+	A patient can authorize her own record read to doctors
+	'''
+	role    = models.CharField(max_length=256, choices=ROLE_CHOICES)
+	subject = models.CharField(max_length=256, choices=SUBJECT_CHOICES)
+	doctor  = models.CharField(max_length=256, choices=SUBJECT_CHOICES)
+	record  = models.IntegerField(max_length=256, choices=[(x.id, x) for x in Record.objects.all()])
+	type    = models.CharField(max_length=256, choices=TYPE_CHOICES)
+	action  = models.CharField(max_length=256, choices=ACTION_CHOICES)
+#	environment = models.TextField()
+
+class FormRule2 (ModelForm):
+	class Meta:
+		model = Rule2
+
+class Rule3 (models.Model):
+	'''
+	A doctor can read her own composed or patient authorized documents
+	'''
 	role = models.CharField(max_length=256, choices=ROLE_CHOICES)
-	principal = models.CharField(max_length=256, choices=SUBJECT_CHOICES)
-	document = models.CharField(max_length=256, choices=[(x.id, x) for x in Document.objects.all().order_by('create_date')])
+	subject = models.CharField(max_length=256, choices=SUBJECT_CHOICES)
+	document = models.IntegerField(max_length=256, choices=[(x.id, x) for x in Document.objects.all().order_by('create_date')])
+	authorized = models.CharField(max_length=256, choices=BOOLING_CHOICES)
 #	environment = models.TextField()
 
-	def __unicode__ (self):
-		return self.name
-	
-class ReadForm (ModelForm):
+class FormRule3 (ModelForm):
 	class Meta:
-		model = Read
+		model = Rule3
 
-class Write (models.Model):
-	account = models.CharField(max_length=256, choices=SUBJECT_CHOICES)
-	hospital = models.CharField(max_length=256, choices=SUBJECT_CHOICES)
-	department = models.CharField(max_length=256, choices=DEPARTMENT_CHOICES)
-	doctor = models.CharField(max_length=256, choices=SUBJECT_CHOICES)
-	patient = models.ForeignKey(Record)
-	type = models.CharField(max_length=256, choices=TYPE_CHOICES)
-	create_date = models.DateTimeField()
-	publish_date = models.DateTimeField()
-	prescription = models.TextField()
+class Rule4 (models.Model):
+	'''
+	A hospital can write her own domain documents
+	'''
+	role = models.CharField(max_length=256, choices=ROLE_CHOICES)
+	subject = models.CharField(max_length=256, choices=SUBJECT_CHOICES)
+	document = models.IntegerField(max_length=256, choices=[(x.id, x) for x in Document.objects.all().order_by('create_date')])
 #	environment = models.TextField()
 
-	def __unicode__ (self):
-		return self.account
-	
-class WriteForm (ModelForm):
+class FormRule4 (ModelForm):
 	class Meta:
-		model = Write
-#		exclude = ('owner', 'author', 'hospital', 'type', 'department')
+		model = Rule4
 
-class Authorize (models.Model):
-	account = models.CharField(max_length=256, choices=SUBJECT_CHOICES)
-	set = models.CharField(max_length=256, choices=SETCLEAR_CHOICES)
-	doctor = models.CharField(max_length=256, choices=SUBJECT_CHOICES)
-	hospital = models.CharField(max_length=256, choices=SUBJECT_CHOICES)
-	type = models.CharField(max_length=256, choices=TYPE_CHOICES)
+class Rule5 (models.Model):
+	'''
+	A sensor can write own domain test documents
+	'''
+	role = models.CharField(max_length=256, choices=ROLE_CHOICES)
+	subject = models.CharField(max_length=256, choices=SUBJECT_CHOICES)
+	document = models.IntegerField(max_length=256, choices=[(x.id, x) for x in Document.objects.all().order_by('create_date')])
+	authorized = models.CharField(max_length=256, choices=BOOLING_CHOICES)
 #	environment = models.TextField()
 
-	def __unicode__(self):
-		return self.account
-	
-class AuthorizeForm (ModelForm):
+class FormRule5 (ModelForm):
 	class Meta:
-		model = Authorize
-#		exclude = ('owner', 'author', 'hospital', 'type', 'department')
+		model = Rule5
