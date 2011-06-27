@@ -12,6 +12,17 @@ from form.request import *
 from form.models import *
 from center.models import *
 
+def view_rules (request):
+	rules = [
+		{'name':'Rule1', 'value':'A patient can read her own documents'},
+		{'name':'Rule2', 'value':'A patient can authorize her own record read to doctors'},
+		{'name':'Rule3', 'value':'A doctor can read her own composed or patient authorized documents'},
+		{'name':'Rule4', 'value':'A hospital can write her own domain documents'},
+		{'name':'Rule5', 'value':'A sensor can write its own domain test documents to authorized records'},
+	]
+	context = {'rules':rules}
+	return render_to_response('form/form_rules.html', context)
+
 def view_rule1 (request):
 	context = {'rule':'Rule1', 'title':'A patient can read her own documents'}
 	

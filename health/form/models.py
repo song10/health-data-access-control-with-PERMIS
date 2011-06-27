@@ -124,7 +124,7 @@ class FormRule4 (ModelForm):
 
 class Rule5 (models.Model):
 	'''
-	A sensor can write own domain test documents
+	A sensor can write its own domain test documents to authorized records
 	'''
 	role = models.CharField(max_length=256, choices=ROLE_CHOICES)
 	subject = models.CharField(max_length=256, choices=SUBJECT_CHOICES)

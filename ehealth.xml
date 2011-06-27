@@ -164,7 +164,7 @@
 				</AND>
 			</IF>
 		</TargetAccess>
-		<TargetAccess ID="A sensor can write own domain test documents to authorized records">
+		<TargetAccess ID="A sensor can write its own domain test documents to authorized records">
 			<RoleList>
 				<Role Type="permisRole" Value="sensor" />
 			</RoleList>

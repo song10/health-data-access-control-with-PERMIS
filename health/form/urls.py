@@ -1,7 +1,7 @@
 from django.conf.urls.defaults import patterns, include, url
 
 urlpatterns = patterns('form.views',
-#	url(r'^$', 'show_form'),
+	url(r'^$'      , 'view_rules'),
 	url(r'^rule1/$', 'view_rule1'),
 	url(r'^rule2/$', 'view_rule2'),
 	url(r'^rule3/$', 'view_rule3'),

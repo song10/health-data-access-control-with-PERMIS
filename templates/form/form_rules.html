@@ -1,0 +1,14 @@
+{% if title %}<h1>{{ rule }} : {{ title }}</h1></p>{% endif %}
+
+{% if rules %}
+<strong>Rules:</strong>
+<ul>
+{% for x in rules %}
+<li><a href="http://ehealth.dyndns.biz/form/{{ x.name|lower }}/">{{ x.name }}</a>: {{ x.value }}</li>
+{% endfor %}
+</ul>
+{% endif %}
+
+<!--
+<li><a href="http://ehealth.sytes.net/form/{{ x.name|lower }}/">{{ x.name }}</a>: {{ x.value }}</li>
+-->
