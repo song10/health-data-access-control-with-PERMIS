@@ -13,8 +13,4 @@ from form.models import *
 from center.models import *
 
 def bridge (request):
-	url = "http://localhost:1104/axis2/services/AuthzService?wsdl" 
-	client = Client(url)
-	client.service.XACMLAuthzRequest(__inject={'msg':message.encode()})
-	recvdata = client.last_received() 
-	pass
+	return HttpResponse("permis.views.bridge")

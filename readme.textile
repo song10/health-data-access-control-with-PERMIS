@@ -1,0 +1,136 @@
+h1. Health Data Access Policy
+
+* Terminology
+* Data Model
+* Policy
+
+h2. Terminology
+
+* (implementation)
+
+h3. (implementation)
+
+* It means implementation suggestions, programmer can do alternative ways.
+
+h2. Data Model
+
+* Record
+* Document
+
+h3. Record
+
+* owner
+* authorization
+* create_date
+
+h4. owner
+
+* The owner of the Record in type String. E.g. "cn=Alice,o=citizen,c=tw"
+
+h4. authorization
+
+* The authorization rules in type String. E.g. "{'cn=Max,ou=Taipei,o=hospitial,c=tw', 'all'}"
+
+h4. create_date
+
+* The date of the record creation in type Date. E.g. "datetime(2011, 6, 28, 16, 3, 5, 260250)"
+
+h3. Document
+
+* record
+* owner
+* author
+* hospital
+* type
+* department
+* content
+* create_date
+* publish_date
+
+h4. record
+
+* The foreign key of record in type Integer. E.g. "3"
+
+h4. owner
+
+* The owner of the Document in type String. E.g. "cn=Alice,o=citizen,c=tw"
+
+h4. author
+
+* The author of the Document in type String. E.g. "cn=Max,ou=Taipei,o=hospitial,c=tw"
+
+h4. hospital
+
+* The hospital of the Document in type String. E.g. "cn=Taipei,o=hospitial,c=tw"
+
+h4. type
+
+* The type of the Document in type String. E.g. "prescription"
+
+h4. department
+
+* The department of the Document in type String. E.g. "ENT"
+
+h4. content
+
+* The content of the Document in type String. E.g. "test results: ..."
+
+h4. create_date
+
+* The date of the Document creation in type Date. E.g. "datetime(2011, 6, 28, 16, 3, 5, 260250)"
+
+h4. publish_date
+
+* The date of the Document publication in type Date. E.g. "datetime(2011, 6, 28, 16, 3, 5, 260250)"
+
+h2. Policy
+
+* Rule 1: A patient can read her own documents
+* Rule 2: A patient can authorize her own record read to doctors
+* Rule 3: A doctor can read her own composed or patient authorized documents
+* Rule 4: A hospital can write her own domain documents
+* Rule 5: A sensor can write own domain test documents to authorized records
+
+h3. Rule 1: A patient can read her own documents
+
+* role == patient
+* action == read
+* subject == document.owner
+
+h3. Rule 2: A patient can authorize her own record read to doctors
+
+* role == patient
+* action == authorize
+* subject == record.owner
+
+Constrains *read* and *doctor* are enforced by rule3.
+Authorization can be put into record.authorization ( implementation ) 
+
+h3. Rule 3: A doctor can read her own composed or patient authorized documents
+
+* role == doctor
+* action == read
+* subject == document.author, or
+** authorized == true
+
+Authorized flag is provide by PEP by the expression: authorized = true if subject in record(document.owner).authorization else false
+
+h3. Rule 4: A hospital can write her own domain documents
+
+* role == hospital
+* action == write
+* subject == document.hospital
+
+Optional constrain:
+* creat_date >= (publish_date - 3-day), which publish_date = datetime.now() at server side.
+
+h3. Rule 5: A sensor can write own domain test documents to authorized records
+
+* role == sensor
+* action == write
+* subject == document.hospital
+* document.type == test
+* authorized == true
+
+Sensor type is distinguished as "cn=Sensor,o=hospital,c=tw" as a virtual hospital. (implementation)
+Each sensor is named as "cn=NAME,ou=Sensor,o=hospital,c=tw" as a virtual doctor. (implementation)

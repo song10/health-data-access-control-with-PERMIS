@@ -1,5 +1,5 @@
 from django.conf.urls.defaults import patterns, include, url
 
-urlpatterns = patterns('form.views',
+urlpatterns = patterns('permis.views',
 	url(r'^$', 'bridge'),
 )

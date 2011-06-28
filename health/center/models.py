@@ -4,7 +4,7 @@ import re
 class Record (models.Model):
 	create_date = models.DateTimeField('date created')
 	owner = models.CharField(max_length=200)
-	policy = models.CharField(max_length=4096, blank=True, null=True)
+	authorization = models.CharField(max_length=4096, blank=True, null=True)
 
 	def __unicode__(self):
 		m = re.match(r'cn=(\w+)', self.owner)
@@ -18,8 +18,7 @@ class Document (models.Model):
 	hospital = models.CharField(max_length=200)
 	type = models.CharField(max_length=200)
 	department = models.CharField(max_length=200)
-	prescription = models.TextField()
-
+	content = models.TextField()
 	publish_date = models.DateTimeField('date published')
 
 	def __unicode__(self):

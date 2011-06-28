@@ -113,8 +113,8 @@ class Patient (Thing):
 #		print('%s (%s)' % ('add_document', map))
 
 		documents_in_db = Document.objects.all()
-		filter = [x.prescription for x in documents_in_db]
-		if map['prescription'] in filter:
+		filter = [x.content for x in documents_in_db]
+		if map['content'] in filter:
 			return None
 		
 		d = self.record.document_set.create(**map)
@@ -212,7 +212,7 @@ for count in range(100):
 		create_date=day,
 		author=dr,
 		hospital=hos,
-		prescription='test #%u'%man.next_index(),
+		content='test #%u'%man.next_index(),
 		publish_date=datetime.datetime.now(),
 	)
 	

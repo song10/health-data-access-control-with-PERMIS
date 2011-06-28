@@ -171,6 +171,22 @@ class Request (Thing):
 			print(template%t)
 			
 		return template%t
+	
+	def add_subject (self, **keyw):
+		pass
+
+	def add_action (self, **keyw):
+		pass
+
+	def add_resource (self, **keyw):
+		pass
+
+	def add_argument (self, **keyw):
+		pass
+
+	def add_environment (self, **keyw):
+		self.environment.add_attribute(Attribute (keyw))
+		pass
 
 class Response (Thing):
 	
@@ -194,7 +210,8 @@ Decision="%(Decision)s", StatusCode="%(StatusCode)s"'''
 
 
 def query (message): 
-	url = "http://localhost:1104/axis2/services/AuthzService?wsdl" 
+#	url = "http://localhost:1104/axis2/services/AuthzService?wsdl"
+	url = "http://permis.dyndns.org/axis2/services/AuthzService?wsdl"
 	client = Client(url)
 	client.service.XACMLAuthzRequest(__inject={'msg':message.encode()})
 	recvdata = client.last_received() 
@@ -217,7 +234,7 @@ if __name__ == '__main__':
 #	arg1 = Attribute (name='arg1', type='String', value='testArgEnv Yes')
 	env0 = Attribute (name='subject', type='String', value='cn=Bruce,o=citizen,c=tw')
 	env1 = Attribute (name='owner', type='String', value='cn=Bruce,o=citizen,c=tw')
-	env2 = Attribute (name='test', type='String', value='123')
+#	env2 = Attribute (name='test', type='String', value='123')
 	req.subject.Attributes.role = subj
 	req.resource.Attributes.res = reso
 	req.action.Attributes.act = acti
@@ -226,7 +243,8 @@ if __name__ == '__main__':
 	req.environment.add_attribute(env0)
 	req.environment.add_attribute(env1)
 #	req.environment.add_attribute(env2)
-#	req.say()
+	req.add_environment(name='test', type='String', value='123')
+	req.say()
 	pass
 
 	res = query(req.say(quiet=True))
