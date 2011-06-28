@@ -98,6 +98,10 @@ class Action (Elem):
 
 	def say (self, **args):
 		return super(Action, self).say(tag='Action', **args)
+
+	def add_argument (self, **keyw):
+		self.add_attribute(Attribute (**keyw))
+		pass
 		
 class Environment (Elem):
 
@@ -136,9 +140,9 @@ class Request (Thing):
 </ul>
 '''
 		d = dict(
-				role=self.subject.Attributes.user.value,
-				resource=self.resource.Attributes.res.value,
-				action=self.action.Attributes.act.value,
+				role=self.subject.Attributes.get(Permis.permisRole).value,
+				action=self.action.Attributes.get(Xacml.action_id).value,
+				resource=self.resource.Attributes.get(Xacml.resource_id).value,
 				env=env,
 				)
 		return template % d
@@ -173,19 +177,19 @@ class Request (Thing):
 		return template%t
 	
 	def add_subject (self, **keyw):
+		self.subject.add_attribute(Attribute (**keyw))
 		pass
 
 	def add_action (self, **keyw):
+		self.action.add_attribute(Attribute (**keyw))
 		pass
 
 	def add_resource (self, **keyw):
-		pass
-
-	def add_argument (self, **keyw):
+		self.resource.add_attribute(Attribute (**keyw))
 		pass
 
 	def add_environment (self, **keyw):
-		self.environment.add_attribute(Attribute (keyw))
+		self.environment.add_attribute(Attribute (**keyw))
 		pass
 
 class Response (Thing):
@@ -211,6 +215,7 @@ Decision="%(Decision)s", StatusCode="%(StatusCode)s"'''
 
 def query (message): 
 #	url = "http://localhost:1104/axis2/services/AuthzService?wsdl"
+#	url = "http://localhost/axis2/services/AuthzService?wsdl"
 	url = "http://permis.dyndns.org/axis2/services/AuthzService?wsdl"
 	client = Client(url)
 	client.service.XACMLAuthzRequest(__inject={'msg':message.encode()})
@@ -227,34 +232,21 @@ def query (message):
 
 if __name__ == '__main__':
 	req = Request ()
-	subj = Attribute (name=Permis.permisRole, type=Xacml.string, value='patient', issuer=My.issuer)
-	reso = Attribute (name=Xacml.resource_id, type=Xacml.string, value='http://localhost/center/document/6/')
-	acti = Attribute (name=Xacml.action_id, type=Xacml.string, value='read')
-#	arg0 = Attribute (name='arg0', type='String', value='testArg')
-#	arg1 = Attribute (name='arg1', type='String', value='testArgEnv Yes')
-	env0 = Attribute (name='subject', type='String', value='cn=Bruce,o=citizen,c=tw')
-	env1 = Attribute (name='owner', type='String', value='cn=Bruce,o=citizen,c=tw')
-#	env2 = Attribute (name='test', type='String', value='123')
-	req.subject.Attributes.role = subj
-	req.resource.Attributes.res = reso
-	req.action.Attributes.act = acti
-#	req.action.add_attribute(arg0)
-#	req.action.add_attribute(arg1)
-	req.environment.add_attribute(env0)
-	req.environment.add_attribute(env1)
-#	req.environment.add_attribute(env2)
+	req.add_subject(value='patient', name=Permis.permisRole, type=Xacml.string, issuer=My.issuer)
+	req.add_action(value='read', name=Xacml.action_id, type=Xacml.string)
+	req.add_resource(value='http://localhost/center/document/6/', name=Xacml.resource_id, type=Xacml.string)
+	req.add_environment(name='subject', type='String', value='cn=Bruce,o=citizen,c=tw')
+	req.add_environment(name='owner', type='String', value='cn=Bruce,o=citizen,c=tw')
 	req.add_environment(name='test', type='String', value='123')
-	req.say()
-	pass
-
+#	req.say()
 	res = query(req.say(quiet=True))
 	Response (res).say()
 #	print(res)
 
-#	env1.value += 'X'
-#	res = query(req.say(quiet=True))
-#	Response (res).say()
-#
-#	env1.value = env1.value[:-1]
-#	res = query(req.say(quiet=True))
-#	Response (res).say()
+	req.environment.Attributes.owner.value += 'X'
+	res = query(req.say(quiet=True))
+	Response (res).say()
+
+	req.environment.Attributes.owner.value = req.environment.Attributes.owner.value[:-1]
+	res = query(req.say(quiet=True))
+	Response (res).say()

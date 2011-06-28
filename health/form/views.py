@@ -40,30 +40,18 @@ def view_rule1 (request):
 	form = FormRule1 (request.POST)
 	if not form.is_valid():
 		return render_to_response('form/dump.html', context.update({'post':p}))
-#		s = request.session or {}
-#		return render_to_response('form/dump.html', {'post':p, 'session':s})
 
 	# valid
 	doc = Document.objects.get(id=int(p.get('document')))
 	req = Request ()
-	role = Attribute (name=Permis.permisRole, type=Xacml.string, value=p.get('role'), issuer=My.issuer)
-	reso = Attribute (name=Xacml.resource_id, type=Xacml.string, value='http://localhost/center/document/%s/'%p.get('document'))
-	acti = Attribute (name=Xacml.action_id, type=Xacml.string, value='read')
-	env0 = Attribute (name='subject', type='String', value=p.get('subject'))
-	env1 = Attribute (name='owner', type='String', value=doc.owner)
-#	env2 = Attribute (name='author', type='String', value=doc.author)
-#	env3 = Attribute (name='authorized', type='String', value='false')
-	req.subject.Attributes.user = role
-	req.resource.Attributes.res = reso
-	req.action.Attributes.act = acti
-	req.environment.add_attribute(env0)
-	req.environment.add_attribute(env1)
-#	req.environment.add_attribute(env2)
-#	req.environment.add_attribute(env3)
+	req.add_subject(value=p.get('role'), name=Permis.permisRole, type=Xacml.string, issuer=My.issuer)
+	req.add_action(value='read', name=Xacml.action_id, type=Xacml.string)
+	req.add_resource(value='http://localhost/center/document/%s/'%p.get('document'), name=Xacml.resource_id, type=Xacml.string)
+	req.add_environment(name='subject', value=p.get('subject'), type='String')
+	req.add_environment(name='owner', value=doc.owner, type='String')
 	res = query(req.say(quiet=True))
 	dec = Response (res).say(quiet=True)
 	return render_to_response('form/form_rule1.html', {'post':p, 'result':dec, 'rule':'Rule1', 'title':'A patient can read her own documents', 'request':req})
-#	return HttpResponse(dec)
 
 def view_rule2 (request):
 	context = {'rule':'Rule2', 'title':'A patient can authorize her own record read to doctors'}
@@ -85,25 +73,15 @@ def view_rule2 (request):
 	# valid
 	rec = Record.objects.get(id=int(p.get('record')))
 	req = Request ()
-	role = Attribute (name=Permis.permisRole, type=Xacml.string, value=p.get('role'), issuer=My.issuer)
-	reso = Attribute (name=Xacml.resource_id, type=Xacml.string, value='http://localhost/center/record/%s/'%p.get('record'))
-	acti = Attribute (name=Xacml.action_id, type=Xacml.string, value='authorize')
-	env0 = Attribute (name='subject', type='String', value=p.get('subject'))
-	env1 = Attribute (name='owner', type='String', value=rec.owner)
-#	env2 = Attribute (name='author', type='String', value=doc.author)
-#	env3 = Attribute (name='authorized', type='String', value='false')
-	req.subject.Attributes.user = role
-	req.resource.Attributes.res = reso
-	req.action.Attributes.act = acti
-	req.environment.add_attribute(env0)
-	req.environment.add_attribute(env1)
-#	req.environment.add_attribute(env2)
-#	req.environment.add_attribute(env3)
+	req.add_subject(value=p.get('role'), name=Permis.permisRole, type=Xacml.string, issuer=My.issuer)
+	req.add_action(value='authorize', name=Xacml.action_id, type=Xacml.string)
+	req.add_resource(value='http://localhost/center/record/%s/'%p.get('record'), name=Xacml.resource_id, type=Xacml.string)
+	req.add_environment(name='subject', value=p.get('subject'), type='String')
+	req.add_environment(name='owner', value=rec.owner, type='String')
 	res = query(req.say(quiet=True))
 	dec = Response (res).say(quiet=True)
 	context.update({'post':p, 'result':dec, 'request':req})
 	return render_to_response('form/form_rule2.html', context)
-#	return HttpResponse(dec)
 
 def view_rule3 (request):
 	context = {'rule':'Rule3', 'title':'A doctor can read her own composed or patient authorized documents'}
@@ -126,25 +104,16 @@ def view_rule3 (request):
 	# valid
 	doc = Document.objects.get(id=int(p.get('document')))
 	req = Request ()
-	role = Attribute (name=Permis.permisRole, type=Xacml.string, value=p.get('role'), issuer=My.issuer)
-	reso = Attribute (name=Xacml.resource_id, type=Xacml.string, value='http://localhost/center/document/%s/'%p.get('document'))
-	acti = Attribute (name=Xacml.action_id, type=Xacml.string, value='read')
-	env0 = Attribute (name='subject', type='String', value=p.get('subject'))
-#	env1 = Attribute (name='owner', type='String', value=doc.owner)
-	env2 = Attribute (name='author', type='String', value=doc.author)
-	env3 = Attribute (name='authorized', type='String', value=p.get('authorized'))
-	req.subject.Attributes.user = role
-	req.resource.Attributes.res = reso
-	req.action.Attributes.act = acti
-	req.environment.add_attribute(env0)
-#	req.environment.add_attribute(env1)
-	req.environment.add_attribute(env2)
-	req.environment.add_attribute(env3)
+	req.add_subject(value=p.get('role'), name=Permis.permisRole, type=Xacml.string, issuer=My.issuer)
+	req.add_action(value='read', name=Xacml.action_id, type=Xacml.string)
+	req.add_resource(value='http://localhost/center/document/%s/'%p.get('document'), name=Xacml.resource_id, type=Xacml.string)
+	req.add_environment(name='subject', value=p.get('subject'), type='String')
+	req.add_environment(name='author', value=doc.author, type='String')
+	req.add_environment(name='authorized', value=p.get('authorized'), type='String')
 	res = query(req.say(quiet=True))
 	dec = Response (res).say(quiet=True)
 	context.update({'post':p, 'result':dec, 'request':req})
 	return render_to_response('form/form_rule3.html', context)
-#	return HttpResponse(dec)
 
 def view_rule4 (request):
 	context = {'rule':'Rule4', 'title':'A hospital can write her own domain documents'}
@@ -167,21 +136,16 @@ def view_rule4 (request):
 	# valid
 	doc = Document.objects.get(id=int(p.get('document')))
 	req = Request ()
-	role = Attribute (name=Permis.permisRole, type=Xacml.string, value=p.get('role'), issuer=My.issuer)
-	reso = Attribute (name=Xacml.resource_id, type=Xacml.string, value='http://localhost/center/document/%s/'%p.get('document'))
-	acti = Attribute (name=Xacml.action_id, type=Xacml.string, value='write')
-	env0 = Attribute (name='subject', type='String', value=p.get('subject'))
-	env1 = Attribute (name='hospital', type='String', value=doc.hospital)
-	req.subject.Attributes.user = role
-	req.resource.Attributes.res = reso
-	req.action.Attributes.act = acti
-	req.environment.add_attribute(env0)
-	req.environment.add_attribute(env1)
+	req.add_subject(value=p.get('role'), name=Permis.permisRole, type=Xacml.string, issuer=My.issuer)
+	req.add_action(value='write', name=Xacml.action_id, type=Xacml.string)
+	req.add_resource(value='http://localhost/center/document/%s/'%p.get('document'), name=Xacml.resource_id, type=Xacml.string)
+	req.add_environment(name='subject', value=p.get('subject'), type='String')
+	req.add_environment(name='hospital', value=doc.hospital, type='String')
+#	req.add_environment(name='authorized', value=p.get('authorized'), type='String')
 	res = query(req.say(quiet=True))
 	dec = Response (res).say(quiet=True)
 	context.update({'post':p, 'result':dec, 'request':req})
 	return render_to_response('form/form_rule4.html', context)
-#	return HttpResponse(dec)
 
 def view_rule5 (request):
 	context = {'rule':'Rule5', 'title':'A sensor can write own domain test documents'}
@@ -204,22 +168,14 @@ def view_rule5 (request):
 	# valid
 	doc = Document.objects.get(id=int(p.get('document')))
 	req = Request ()
-	role = Attribute (name=Permis.permisRole, type=Xacml.string, value=p.get('role'), issuer=My.issuer)
-	reso = Attribute (name=Xacml.resource_id, type=Xacml.string, value='http://localhost/center/document/%s/'%p.get('document'))
-	acti = Attribute (name=Xacml.action_id, type=Xacml.string, value='write')
-	env0 = Attribute (name='subject', type='String', value=p.get('subject'))
-	env1 = Attribute (name='author', type='String', value=doc.author)
-	env2 = Attribute (name='type', type='String', value=doc.type)
-	env3 = Attribute (name='authorized', type='String', value=p.get('authorized'))
-	req.subject.Attributes.user = role
-	req.resource.Attributes.res = reso
-	req.action.Attributes.act = acti
-	req.environment.add_attribute(env0)
-	req.environment.add_attribute(env1)
-	req.environment.add_attribute(env2)
-	req.environment.add_attribute(env3)
+	req.add_subject(value=p.get('role'), name=Permis.permisRole, type=Xacml.string, issuer=My.issuer)
+	req.add_action(value='write', name=Xacml.action_id, type=Xacml.string)
+	req.add_resource(value='http://localhost/center/document/%s/'%p.get('document'), name=Xacml.resource_id, type=Xacml.string)
+	req.add_environment(name='subject'   , value=p.get('subject')   , type='String')
+	req.add_environment(name='author'    , value=doc.author         , type='String')
+	req.add_environment(name='type'      , value=doc.type           , type='String')
+	req.add_environment(name='authorized', value=p.get('authorized'), type='String')
 	res = query(req.say(quiet=True))
 	dec = Response (res).say(quiet=True)
 	context.update({'post':p, 'result':dec, 'request':req})
 	return render_to_response('form/form_rule5.html', context)
-#	return HttpResponse(dec)
